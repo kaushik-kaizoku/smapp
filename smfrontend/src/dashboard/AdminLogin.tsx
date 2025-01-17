@@ -4,14 +4,14 @@ import { BACKEND_URL } from '@/config';
 import { useNavigate } from 'react-router-dom';
 
 interface LoginCredentials {
-  username: string;
+  email: string;
   password: string;
 }
 
 
 const AdminLogin: React.FC = () => {
   const [credentials, setCredentials] = useState<LoginCredentials>({
-    username: '',
+    email: '',
     password: ''
   });
   const [error, setError] = useState<string>('');
@@ -28,14 +28,20 @@ const AdminLogin: React.FC = () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/login`, {
         method: 'POST',
-        body: JSON.stringify(credentials), 
+        headers: {
+          'Content-Type': 'application/json', // Ensure the request is sent as JSON
+        },
+        body: JSON.stringify({
+          email: credentials.email,
+          password: credentials.password,
+        }) 
       });
       const data = await response.json();
       const jwt = data.token;
       localStorage.setItem("token", jwt);
-      navigate('/dashboard');
+      navigate('/dashboard')
     } catch (err) {
-      setError('Invalid username or password');
+      setError('Invalid email or password');
     } finally {
       setIsLoading(false);
     }
@@ -63,16 +69,16 @@ const AdminLogin: React.FC = () => {
             <div>
               <label className="flex items-center gap-2 text-gray-700 text-sm font-medium mb-1">
                 <User className="w-4 h-4" />
-                Username
+                Email
               </label>
               <input
                 type="text"
-                name="username"
-                value={credentials.username}
+                name="email"
+                value={credentials.email}
                 onChange={handleChange}
                 required
                 className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                placeholder="Enter your username"
+                placeholder="Enter your email"
               />
             </div>
 

@@ -51,7 +51,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchSubmissions();
-    const pollInterval = setInterval(fetchSubmissions, 30000);
+    const pollInterval = setInterval(fetchSubmissions, 30000000);
     return () => clearInterval(pollInterval);
   }, []);
 
